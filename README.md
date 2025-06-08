@@ -2,8 +2,8 @@
 
 A modern web application that helps you create a GitHub-style contribution calendar with custom commit messages. Perfect for tracking activities, habits, or any daily events you want to visualize.
 
-![TimeTravel Preview](Preview.gif)
-![TimeTravel Screenshot](commit-1999.png)
+![TimeTravel Preview](previews/timetravel.gif)
+![TimeTravel Screenshot](previews/commit-2025.png)
 
 ## Features
 
