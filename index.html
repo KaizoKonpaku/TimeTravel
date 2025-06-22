@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TimeTravel - GitHub-style Contribution Calendar</title>
+    <link rel="stylesheet" href="src/css/styles.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .space-container {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            perspective: 1000px;
+        }
+
+        .grid {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-style: preserve-3d;
+            background-image: 
+                radial-gradient(circle at 0 0, rgba(128, 128, 128, 0.5) 1px, transparent 1px),
+                linear-gradient(rgba(128, 128, 128, 0.15) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(128, 128, 128, 0.15) 1px, transparent 1px);
+            background-size: 
+                100px 100px,
+                100px 100px,
+                100px 100px;
+            background-position: 
+                0 0,
+                0 0,
+                0 0;
+            width: 1000vw;
+            height: 1000vh;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <div class="space-container">
+        <div class="grid" id="grid"></div>
+    </div>
+
+    <script type="module" src="src/js/main.js"></script>
+    <script>
+        const grid = document.getElementById('grid');
+        const container = document.querySelector('.space-container');
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+        let currentX = 0;
+        let currentY = 0;
+
+        // Track mouse position
+        document.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX - window.innerWidth / 2) / window.innerWidth;
+            mouseY = (e.clientY - window.innerHeight / 2) / window.innerHeight;
+            
+            // Calculate target position with increased movement range
+            targetX = mouseX * 400;
+            targetY = mouseY * 400;
+        });
+
+        // Smooth animation loop
+        function animate() {
+            // Smooth interpolation
+            currentX += (targetX - currentX) * 0.05;
+            currentY += (targetY - currentY) * 0.05;
+
+            // Apply transform with perspective effect
+            grid.style.transform = `translate(-50%, -50%) 
+                                  translate3d(${currentX}px, ${currentY}px, 0)
+                                  rotateX(${-mouseY * 3}deg) 
+                                  rotateY(${mouseX * 3}deg)`;
+
+            requestAnimationFrame(animate);
+        }
+
+        // Handle touch devices
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let isDragging = false;
+        
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            isDragging = true;
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            
+            const touchX = e.touches[0].clientX;
+            const touchY = e.touches[0].clientY;
+            
+            const deltaX = (touchX - touchStartX) / window.innerWidth;
+            const deltaY = (touchY - touchStartY) / window.innerHeight;
+            
+            targetX += deltaX * 400;
+            targetY += deltaY * 400;
+            
+            touchStartX = touchX;
+            touchStartY = touchY;
+            
+            e.preventDefault();
+        });
+
+        document.addEventListener('touchend', () => {
+            isDragging = false;
+        });
+
+        // Start animation
+        animate();
+    </script>
+</body>
+</html>
